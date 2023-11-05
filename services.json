@@ -1,0 +1,50 @@
+[
+    {
+      "serviceImage": "https://i.ibb.co/xXyc4NK/Pest-Control-Home.jpg",
+      "serviceName": "Pest Inspection",
+      "serviceDescription": "Thorough inspection of your property to identify and assess pest infestations.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "John Doe",
+      "servicePrice": "$75"
+    },
+    {
+      "serviceImage": "https://i.ibb.co/jvLQrkW/rodent-control.jpg",
+      "serviceName": "Rodent Control",
+      "serviceDescription": "Effective control and removal of rodents from your premises.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "Jane Smith",
+      "servicePrice": "$90"
+    },
+    {
+      "serviceImage": "https://i.ibb.co/vJ2sV9R/images.jpg",
+      "serviceName": "Termite Extermination",
+      "serviceDescription": "Comprehensive treatment to eliminate termites from your property.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "Mark Johnson",
+      "servicePrice": "$120"
+    },
+    {
+      "serviceImage": "https://i.ibb.co/SvBJP6P/Apprehend-Pittsburgh-Bed-Bug-Extermination.webp",
+      "serviceName": "Bed Bug Treatment",
+      "serviceDescription": "Specialized treatment to eradicate bed bugs and prevent re-infestation.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "Emily Davis",
+      "servicePrice": "$100"
+    },
+    {
+      "serviceImage": "https://i.ibb.co/zGRt9Xn/Ecosan-Pest-control-exterior-ants-01.jpg",
+      "serviceName": "Ant Control",
+      "serviceDescription": "Efficient control and prevention of ant infestations in your property.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "Michael Brown",
+      "servicePrice": "$80"
+    },
+    {
+      "serviceImage": "https://i.ibb.co/M5pbw7q/Commercial-Mosquito-Control.jpg",
+      "serviceName": "Mosquito Treatment",
+      "serviceDescription": "Targeted treatment to reduce and eliminate mosquito populations around your property.",
+      "providerImage": "https://i.ibb.co/d7pWcG0/erik-lucatero-d2-MSDuj-Jl2g-unsplash.jpg",
+      "providerName": "Sarah Williams",
+      "servicePrice": "$70"
+    }
+  ]
