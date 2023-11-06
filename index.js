@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 const app = express()
@@ -26,6 +26,11 @@ async function run() {
   try {
 
     const serviceCollection = client.db('PestControl').collection('services')
+    const serviceAreaCollection = client.db('PestControl').collection('serviceswithArea')
+    const serviceAreaEmailCollection = client.db('PestControl').collection('serviceswithAreaandemail')
+    const bookingCollection = client.db('PestControl').collection('booking')
+    const addServiceCollection = client.db('PestControl').collection('addService')
+
 
     // get services
     app.get('/services', async (req, res) => {
@@ -33,6 +38,51 @@ async function run() {
         const result = await cursor.toArray()
         res.send(result)
     })
+
+    // post(add service) services
+    app.post('/services', async (req, res) => {
+        const body = req.body;
+        const result = await serviceCollection.insertOne(body)
+        res.send(result)
+    })
+
+
+    // get services with area
+    app.get('/serviceswithArea', async (req, res) => {
+      const cursor = serviceAreaCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    //
+    app.get('/serviceswithAreaandemail', async (req, res) => {
+      const cursor = serviceAreaEmailCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    app.get('/serviceswithAreaandemail/:id', async (req, res) => {
+      const id =req.params.id;
+      const query ={_id:id}
+      const result = await serviceAreaEmailCollection.findOne(query)
+      res.send(result)
+    })
+
+    // post booking
+    app.post('/bookings', async (req, res) => {
+      const addBooking =req.body;
+      const result = await bookingCollection.insertOne(addBooking)
+      res.send(result)
+    })
+
+
+    // post add Service
+    app.post('/addService', async (req, res) => {
+      const addService =req.body;
+      const result = await addServiceCollection.insertOne(addService)
+      res.send(result)
+    })
+
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
