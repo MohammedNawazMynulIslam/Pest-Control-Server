@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const jwt =require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
@@ -9,7 +10,7 @@ const port = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
 
-
+// user email
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.7jyxnen.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -30,6 +31,14 @@ async function run() {
     const serviceAreaEmailCollection = client.db('PestControl').collection('serviceswithAreaandemail')
     const bookingCollection = client.db('PestControl').collection('booking')
     const addServiceCollection = client.db('PestControl').collection('addService')
+
+    // user auth
+    const checkAuthentication = (req, res, next) => {
+      if (req.isAuthenticated()) {
+        return next(); // User is authenticated, continue to the next middleware/route
+      }
+      return res.status(401).json({ message: "Unauthorized" }); // User is not authenticated, send 401 Unauthorized response
+    };
 
 
     // get services
@@ -68,10 +77,23 @@ async function run() {
     })
 
     // post booking
-    app.post('/bookings', async (req, res) => {
+    app.post('/booking', async (req, res) => {
       const addBooking =req.body;
       const result = await bookingCollection.insertOne(addBooking)
       res.send(result)
+    })
+    // get booking
+    app.get('/booking',async(req,res)=>{
+     const cursor =  bookingCollection.find();
+     const result= await cursor.toArray();
+     res.send(result)
+    })
+    // get booking by id
+    app.get('/booking/:id',async(req,res)=>{
+     const id =req.params.id;
+     const query ={_id:new ObjectId(id)}
+     const result = await bookingCollection.findOne(query)
+     res.send(result)
     })
 
 
@@ -89,7 +111,7 @@ async function run() {
       res.send(result)
       })
       // delete add service
-      app.delete('/addServices/:id',async (req,res)=>{
+      app.delete('/addServices/:id', checkAuthentication,async (req,res)=>{
         const id=req.params.id;
         const query ={_id : new ObjectId(id)}
         const result = await addServiceCollection.deleteOne(query)
@@ -122,6 +144,45 @@ async function run() {
           console.log(body)
           res.send(result)
           });
+
+
+
+          // update booking status pending
+          app.put('/booking/:id/status',async(req,res)=>{
+            const id = {_id:new ObjectId(req.params.id)}
+            try{
+              const query = {_id:new ObjectId(id)};
+              const update={
+                $set:{
+                  "status":"status"
+              }
+            };
+            const result = await bookingCollection.updateOne(query,update);
+            if (result.modifiedCount > 0) {
+              res.send({ success: true, message: "Booking status updated successfully" });
+            } else {
+              res.status(404).send({ success: false, message: "Booking not found" });
+            }
+          } catch (error) {
+            console.error(error);
+            res.status(500).send({ success: false, message: "An error occurred while updating booking status" });
+          }
+
+          })
+
+          // jwt post
+          app.post("/jwt",async(req,res)=>{
+            const body= req.body
+            const token = jwt.sign(body,process.env.SECRET,{expiresIn:"23h"});
+            console.log(token)
+            res
+            .cookie("token",token,{
+              httpOnly: true,
+              secure:false,
+            })
+            .send({message:"Succeed", token})
+          })
+
 
 
     await client.db("admin").command({ ping: 1 });
