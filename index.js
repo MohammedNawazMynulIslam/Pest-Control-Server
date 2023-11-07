@@ -96,6 +96,32 @@ async function run() {
           res.send(result)
           });
 
+          app.get('/addServices/:id',async(req,res)=>{
+            try{
+            const updateProduct = await addServiceCollection.findOne({
+              _id:new ObjectId(req.params.id),
+            });
+            console.log(updateProduct);
+            res.send(updateProduct)
+          }catch(error){
+            console.log(error)
+          }
+        });
+
+        // update add service
+        app.put('/addServices/:id',async (req,res)=>{
+          const id = {_id:new ObjectId(req.params.id)}
+          const body = req.body;
+          const updateProduct = {
+            $set:{
+              ...body
+          },
+        };
+        const option = {upsert:true}
+        const result = await addServiceCollection.updateOne(id,updateProduct,option)
+          console.log(body)
+          res.send(result)
+          });
 
 
     await client.db("admin").command({ ping: 1 });
