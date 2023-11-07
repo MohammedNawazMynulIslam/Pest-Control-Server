@@ -53,12 +53,13 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
-    //
+    //get service are with email
     app.get('/serviceswithAreaandemail', async (req, res) => {
       const cursor = serviceAreaEmailCollection.find();
       const result = await cursor.toArray()
       res.send(result)
     })
+       //get service are with email  by id
     app.get('/serviceswithAreaandemail/:id', async (req, res) => {
       const id =req.params.id;
       const query ={_id:id}
@@ -80,6 +81,20 @@ async function run() {
       const result = await addServiceCollection.insertOne(addService)
       res.send(result)
     })
+
+    // get add service
+    app.get('/addServices', async (req, res) => {
+      const cursor = addServiceCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+      })
+      // delete add service
+      app.delete('/addServices/:id',async (req,res)=>{
+        const id=req.params.id;
+        const query ={_id : new ObjectId(id)}
+        const result = await addServiceCollection.deleteOne(query)
+          res.send(result)
+          });
 
 
 
