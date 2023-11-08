@@ -15,7 +15,7 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
-// user email
+
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.7jyxnen.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -27,6 +27,25 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+// verify middleware
+const verify = async(req,res,next)=>{
+  const token = req.cookies?.token;
+  if(!token){
+    res.status(401).send({status:"unAuthorize access"});
+    return;
+  }
+  jwt.verify(token,process.env.SECRET,(error, decode)=>{
+    if(error){
+      res.status(401).send({status:"Wrong Token"});
+    }
+    else{
+      // console.log(decode)
+      req.decode = decode
+    }
+  });
+  next();
+};
+
 
 async function run() {
   try {
@@ -38,12 +57,7 @@ async function run() {
     const addServiceCollection = client.db('PestControl').collection('addService')
 
     // user auth
-    const checkAuthentication = (req, res, next) => {
-      if (req.isAuthenticated()) {
-        return next(); // User is authenticated, continue to the next middleware/route
-      }
-      return res.status(401).json({ message: "Unauthorized" }); // User is not authenticated, send 401 Unauthorized response
-    };
+
 
 
     // get services
@@ -74,7 +88,7 @@ async function run() {
       res.send(result)
     })
        //get service are with email  by id
-    app.get('/serviceswithAreaandemail/:id', async (req, res) => {
+    app.get('/serviceswithAreaandemail/:id', verify, async (req, res) => {
       const id =req.params.id;
       const query ={_id:id}
       const result = await serviceAreaEmailCollection.findOne(query)
@@ -94,7 +108,7 @@ async function run() {
      res.send(result)
     })
     // get booking by id
-    app.get('/booking/:id',async(req,res)=>{
+    app.get('/booking/:id', verify,async(req,res)=>{
      const id =req.params.id;
      const query ={_id:new ObjectId(id)}
      const result = await bookingCollection.findOne(query)
@@ -116,14 +130,15 @@ async function run() {
       res.send(result)
       })
       // delete add service
-      app.delete('/addServices/:id', checkAuthentication,async (req,res)=>{
+      app.delete('/addServices/:id',   async (req,res)=>{
         const id=req.params.id;
         const query ={_id : new ObjectId(id)}
         const result = await addServiceCollection.deleteOne(query)
           res.send(result)
           });
 
-          app.get('/addServices/:id',async(req,res)=>{
+          app.get('/addServices/:id', verify, async(req,res)=>{
+            console.log(req.decode)
             try{
             const updateProduct = await addServiceCollection.findOne({
               _id:new ObjectId(req.params.id),
@@ -179,14 +194,35 @@ async function run() {
           app.post("/jwt",async(req,res)=>{
             const body= req.body
             const token = jwt.sign(body,process.env.SECRET,{expiresIn:"23h"});
-            console.log(token)
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate()+30)
+            // console.log(token)
             res
             .cookie("token",token,{
               httpOnly: true,
               secure:false,
+              expires:expirationDate,
             })
             .send({message:"Succeed", token})
           })
+
+
+          // google jwt post
+          app.post('/google-jwt',async(req,res)=>{
+            const googleToken = req.body
+            const token = jwt.sign(googleToken,process.env.SECRET,{expiresIn:"23h"});
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate()+30)
+            console.log("google-token" ,token)
+            res
+            .cookie("token",token,{
+              httpOnly: true,
+              secure:false,
+              expires:expirationDate,
+            })
+            .send({message:"Succeed", token})
+          })
+
 
 
 
