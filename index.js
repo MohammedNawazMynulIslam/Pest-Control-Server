@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000
 
 app.use(cors({
   origin: [
-    // 'http://localhost:5174',
+    // 'http://localhost:5174','http://localhost:5173',
     'https://pest-control-a59a3.web.app',
     'https://pest-control-a59a3.firebaseapp.com',
   ],
@@ -92,7 +92,8 @@ async function run() {
       res.send(result)
     })
        //get service are with email  by id
-    app.get('/serviceswithAreaandemail/:id', verify, async (req, res) => {
+
+    app.get('/serviceswithAreaandemail/:id', verify,async (req, res) => {
       const id =req.params.id;
       const query ={_id:id}
       const result = await serviceAreaEmailCollection.findOne(query)
@@ -112,7 +113,8 @@ async function run() {
      res.send(result)
     })
     // get booking by id
-    app.get('/booking/:id', verify,async(req,res)=>{
+
+    app.get('/booking/:id',verify,async(req,res)=>{
      const id =req.params.id;
      const query ={_id:new ObjectId(id)}
      const result = await bookingCollection.findOne(query)
@@ -140,8 +142,8 @@ async function run() {
         const result = await addServiceCollection.deleteOne(query)
           res.send(result)
           });
-
-          app.get('/addServices/:id', verify, async(req,res)=>{
+//,
+          app.get('/addServices/:id',  verify, async(req,res)=>{
             console.log(req.decode)
             try{
             const updateProduct = await addServiceCollection.findOne({
@@ -206,6 +208,7 @@ async function run() {
               httpOnly: true,
               secure:true,
               sameSite:"none",
+              // maxAge: someValue,
               expires:expirationDate,
             })
             .send({message:"Succeed", token})
@@ -222,8 +225,10 @@ async function run() {
             res
             .cookie("token",token,{
               httpOnly: true,
-              secure:false,
+              secure:true,
+              sameSite:'none',
               expires:expirationDate,
+              // secure: true, httpOnly:true, sameSite: 'none'
             })
             .send({message:"Succeed", token})
           })
