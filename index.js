@@ -9,9 +9,13 @@ const app = express()
 const port = process.env.PORT || 3000
 
 app.use(cors({
-  origin:['http://localhost:5173'],
+  origin: [
+    // 'http://localhost:5174',
+    'https://pest-control-a59a3.web.app',
+    'https://pest-control-a59a3.firebaseapp.com',
+  ],
   credentials: true,
-}))
+}));
 app.use(express.json())
 app.use(cookieParser())
 
@@ -201,6 +205,7 @@ async function run() {
             .cookie("token",token,{
               httpOnly: true,
               secure:false,
+              sameSite:"none",
               expires:expirationDate,
             })
             .send({message:"Succeed", token})
