@@ -10,9 +10,9 @@ const port = process.env.PORT || 3000
 
 app.use(cors({
   origin: [
-    // 'http://localhost:5174','http://localhost:5173',
-    'https://pest-control-a59a3.web.app',
-    'https://pest-control-a59a3.firebaseapp.com',
+    'http://localhost:5174','http://localhost:5173',
+    // 'https://pest-control-a59a3.web.app',
+    // 'https://pest-control-a59a3.firebaseapp.com',
   ],
   credentials: true,
 }));
